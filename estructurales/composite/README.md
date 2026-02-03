@@ -16,22 +16,34 @@ Componer objetos en estructuras de árbol para representar jerarquías parte-tod
 
 ## ❓ Problema
 
-Explica el problema típico que aparece cuando **NO** se usa el patrón.
+Cuando necesitamos representar jerarquías de objetos parte-todo y tratarlos uniformemente:
 
-- Código rígido
-- Muchas condiciones (`if / switch`)
-- Dificultad para extender
-- Alto acoplamiento
+- Diferenciación compleja entre objetos simples y compuestos
+- Código cliente lleno de condicionales para distinguir tipos
+- Difícil agregar nuevos tipos de componentes
+- Operaciones recursivas en estructuras de árbol son complejas
+- Violación del principio Abierto/Cerrado
+
+**Ejemplo:** Sistema de archivos (archivos y carpetas), estructuras organizacionales (empleados y departamentos), interfaces gráficas (componentes simples y contenedores).
 
 ---
 
 ## ✅ Solución
 
-Describe cómo el patrón propone resolver el problema:
+El patrón Composite propone:
 
-- Qué clases / interfaces introduce
-- Cómo se distribuyen las responsabilidades
-- Qué se desacopla
+- **Interfaz única:** Tanto objetos simples como compuestos implementan la misma interfaz
+- **Estructura de árbol:** Los compuestos contienen componentes (simples u otros compuestos)
+- **Tratamiento uniforme:** El cliente trata hojas y compuestos de la misma manera
+- **Recursividad:** Las operaciones se propagan recursivamente en la estructura
+- **Transparencia:** El cliente no necesita distinguir entre tipos
+
+**Beneficios:**
+- Simplifica código cliente (trata todo uniformemente)
+- Facilita agregar nuevos tipos de componentes
+- Estructura jerárquica natural y flexible
+- Operaciones recursivas simplificadas
+- Cumple principio Abierto/Cerrado
 
 ---
 
@@ -39,11 +51,30 @@ Describe cómo el patrón propone resolver el problema:
 
 Roles principales del patrón:
 
-- **Contexto:**
-- **Interfaz:**
-- **Implementaciones concretas:**
+- **Component (Componente - Interfaz):** 
+  - Declara interfaz común para objetos simples y compuestos
+  - Implementa comportamiento por defecto cuando aplica
+  - Declara métodos para gestionar hijos (opcional)
+  
+- **Leaf (Hoja):** 
+  - Representa objetos terminales (sin hijos)
+  - Implementa comportamiento para objetos primitivos
+  - No puede tener componentes hijos
+  
+- **Composite (Compuesto):** 
+  - Representa componentes que pueden tener hijos
+  - Almacena componentes hijos (hojas u otros compuestos)
+  - Implementa operaciones para manipular hijos
+  - Delega operaciones a sus hijos
+  
+- **Client (Cliente):** 
+  - Manipula objetos de la composición a través de Component
+  - No distingue entre Leaf y Composite
 
-_(Puedes acompañar esta sección con un diagrama UML en `/docs/diagramas`)_
+**Relaciones:**
+- Composite contiene Components (puede ser Leaf u otros Composite)
+- Client usa Component (interfaz común)
+- Las operaciones se propagan recursivamente
 
 ---
 
@@ -52,8 +83,14 @@ _(Puedes acompañar esta sección con un diagrama UML en `/docs/diagramas`)_
 ### 📁 Estructura de Carpetas
 
 ```text
-nombre-del-patron/
+composite/
 ├── context/
-├── strategy/
+│   ├── FileSystemComponent.java      # Componente base
+│   ├── File.java                     # Hoja: archivo
+│   └── Directory.java                # Compuesto: directorio
 ├── impl/
-└── Main.java
+│   ├── Department.java               # Compuesto: departamento
+│   ├── Employee.java                 # Hoja: empleado
+│   ├── GraphicObject.java            # Componente gráfico
+│   └── GraphicGroup.java             # Grupo de gráficos
+└── Main.java                          # Demostración de estructura jerárquica

@@ -16,22 +16,38 @@ Crear nuevos objetos copiando un objeto existente (prototipo) en lugar de crear 
 
 ## ❓ Problema
 
-Explica el problema típico que aparece cuando **NO** se usa el patrón.
+Cuando crear objetos desde cero es costoso o complejo:
 
-- Código rígido
-- Muchas condiciones (`if / switch`)
-- Dificultad para extender
-- Alto acoplamiento
+- Creación costosa (consultas a BD, cálculos intensivos, lectura de archivos)
+- Objetos con configuración compleja que debe replicarse
+- Clases desconocidas en tiempo de compilación
+- Reducción de subclases de factories
+- Estado complejo que debe preservarse
+
+**Ejemplo:** Clonar objetos gráficos en un editor, crear copias de documentos con formato, o duplicar configuraciones complejas.
 
 ---
 
 ## ✅ Solución
 
-Describe cómo el patrón propone resolver el problema:
+El patrón Prototype propone:
 
-- Qué clases / interfaces introduce
-- Cómo se distribuyen las responsabilidades
-- Qué se desacopla
+- **Clonación en lugar de creación:** Copiar objetos existentes
+- **Interfaz de clonación:** Método `clone()` o `copy()`
+- **Clonación profunda vs superficial:** Controlar el nivel de copia
+- **Registro de prototipos:** Manager que mantiene prototipos disponibles
+- **Configuración por copia:** Evitar reconfiguración desde cero
+
+**Beneficios:**
+- Reduce costos de creación de objetos
+- Evita subclases de creadores
+- Agrega y elimina productos en tiempo de ejecución
+- Configura aplicación con clases dinámicamente
+- Reduce necesidad de subclases
+
+**Consideraciones:**
+- Clonar objetos con referencias circulares puede ser complejo
+- Deep clone vs shallow clone debe definirse claramente
 
 ---
 
@@ -39,11 +55,27 @@ Describe cómo el patrón propone resolver el problema:
 
 Roles principales del patrón:
 
-- **Contexto:**
-- **Interfaz:**
-- **Implementaciones concretas:**
+- **Prototype (Prototipo - Interfaz):** 
+  - Declara interfaz para clonarse a sí mismo
+  - Típicamente método `clone()` o `copy()`
+  
+- **ConcretePrototype (Prototipo Concreto):** 
+  - Implementa operación de clonación
+  - Retorna una copia de sí mismo
+  - Maneja la clonación profunda si es necesario
+  
+- **Client (Cliente):** 
+  - Crea nuevos objetos solicitando a un prototipo que se clone
+  - No conoce las clases concretas de los objetos
+  
+- **PrototypeRegistry (Registro - Opcional):** 
+  - Mantiene un registro de prototipos disponibles
+  - Proporciona acceso a prototipos por nombre o tipo
 
-_(Puedes acompañar esta sección con un diagrama UML en `/docs/diagramas`)_
+**Relaciones:**
+- Client usa Prototype para obtener copias
+- ConcretePrototype se clona a sí mismo
+- PrototypeRegistry almacena y gestiona prototipos
 
 ---
 
@@ -52,8 +84,14 @@ _(Puedes acompañar esta sección con un diagrama UML en `/docs/diagramas`)_
 ### 📁 Estructura de Carpetas
 
 ```text
-nombre-del-patron/
+prototype/
 ├── context/
+│   └── PrototypeRegistry.java        # Registro de prototipos
 ├── strategy/
+│   └── Cloneable.java                # Interfaz de clonación
 ├── impl/
-└── Main.java
+│   ├── Circle.java                   # Prototipo: círculo
+│   ├── Rectangle.java                # Prototipo: rectángulo
+│   ├── ComplexShape.java             # Prototipo con clonación profunda
+│   └── Document.java                 # Prototipo: documento
+└── Main.java                          # Demostración de clonación

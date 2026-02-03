@@ -16,22 +16,33 @@ Definir una dependencia uno-a-muchos entre objetos de forma que cuando un objeto
 
 ## ❓ Problema
 
-Explica el problema típico que aparece cuando **NO** se usa el patrón.
+Cuando múltiples objetos necesitan estar sincronizados con el estado de otro objeto:
 
-- Código rígido
-- Muchas condiciones (`if / switch`)
-- Dificultad para extender
-- Alto acoplamiento
+- Acoplamiento fuerte entre el objeto observado y los observadores
+- Código rígido que especifica qué objetos deben ser notificados
+- Difícil agregar o quitar observadores sin modificar el sujeto
+- Notificaciones manuales propensas a errores (olvidar notificar)
+- Imposibilidad de suscripción/cancelación dinámica
+
+**Ejemplo:** Un sistema de noticias donde múltiples pantallas deben actualizarse cuando llega una nueva noticia.
 
 ---
 
 ## ✅ Solución
 
-Describe cómo el patrón propone resolver el problema:
+El patrón Observer propone:
 
-- Qué clases / interfaces introduce
-- Cómo se distribuyen las responsabilidades
-- Qué se desacopla
+- **Sujeto (Subject):** Mantiene una lista de observadores y los notifica automáticamente
+- **Observadores:** Se suscriben al sujeto para recibir actualizaciones
+- **Notificación automática:** Cuando el sujeto cambia, notifica a todos sus observadores
+- **Acoplamiento débil:** El sujeto solo conoce la interfaz del observador
+- **Suscripción dinámica:** Los observadores pueden agregarse/eliminarse en tiempo de ejecución
+
+**Beneficios:**
+- Bajo acoplamiento entre sujeto y observadores
+- Relación uno-a-muchos flexible
+- Soporte para broadcast de comunicación
+- Cumple con el principio Abierto/Cerrado
 
 ---
 
@@ -39,11 +50,26 @@ Describe cómo el patrón propone resolver el problema:
 
 Roles principales del patrón:
 
-- **Contexto:**
-- **Interfaz:**
-- **Implementaciones concretas:**
+- **Subject (Sujeto):** 
+  - Conoce a sus observadores (lista)
+  - Proporciona métodos para agregar/eliminar observadores
+  - Notifica a los observadores cuando cambia su estado
+  
+- **Observer (Observador - Interfaz):** 
+  - Define una interfaz de actualización para objetos que deben ser notificados
+  
+- **ConcreteSubject (Sujeto Concreto):** 
+  - Almacena el estado de interés para los observadores
+  - Envía notificaciones cuando su estado cambia
+  
+- **ConcreteObserver (Observador Concreto):** 
+  - Mantiene una referencia al ConcreteSubject
+  - Implementa la interfaz de actualización para mantener su estado consistente
 
-_(Puedes acompañar esta sección con un diagrama UML en `/docs/diagramas`)_
+**Relaciones:**
+- Subject tiene muchos Observers (uno-a-muchos)
+- ConcreteObserver conoce a ConcreteSubject
+- Observer es notificado por Subject
 
 ---
 
@@ -52,8 +78,13 @@ _(Puedes acompañar esta sección con un diagrama UML en `/docs/diagramas`)_
 ### 📁 Estructura de Carpetas
 
 ```text
-nombre-del-patron/
+observer/
 ├── context/
+│   └── NewsPublisher.java            # Sujeto concreto (publicador)
 ├── strategy/
+│   └── NewsObserver.java             # Interfaz del observador
 ├── impl/
-└── Main.java
+│   ├── EmailSubscriber.java          # Observador: notifica por email
+│   ├── MobileAppSubscriber.java      # Observador: notifica en app móvil
+│   └── WebDashboardSubscriber.java   # Observador: actualiza dashboard web
+└── Main.java                          # Demostración del patrón

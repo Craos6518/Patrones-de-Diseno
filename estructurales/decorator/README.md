@@ -16,22 +16,34 @@ Agregar dinámicamente nuevas responsabilidades a un objeto, proporcionando una 
 
 ## ❓ Problema
 
-Explica el problema típico que aparece cuando **NO** se usa el patrón.
+Cuando necesitamos agregar responsabilidades a objetos de forma dinámica y flexible:
 
-- Código rígido
-- Muchas condiciones (`if / switch`)
-- Dificultad para extender
-- Alto acoplamiento
+- Herencia estática inflexible (no se puede cambiar en tiempo de ejecución)
+- Explosión de subclases para cada combinación de funcionalidades
+- Modificar la clase original no es posible o deseable
+- Funcionalidades opcionales que se combinan de múltiples formas
+- Violación del principio de Responsabilidad Única
+
+**Ejemplo:** Agregar funcionalidades a flujos de datos (compresión, encriptación, buffering), decorar componentes de UI, añadir características a bebidas en una cafetería.
 
 ---
 
 ## ✅ Solución
 
-Describe cómo el patrón propone resolver el problema:
+El patrón Decorator propone:
 
-- Qué clases / interfaces introduce
-- Cómo se distribuyen las responsabilidades
-- Qué se desacopla
+- **Envolver objetos:** El decorator envuelve el componente original
+- **Misma interfaz:** Decorator implementa la misma interfaz que el componente
+- **Delegación + extensión:** Delega al componente y agrega funcionalidad
+- **Composición dinámica:** Los decorators pueden apilarse en tiempo de ejecución
+- **Transparencia:** El cliente no distingue entre componente decorado y sin decorar
+
+**Beneficios:**
+- Más flexible que la herencia estática
+- Evita clases sobrecargadas con muchas características
+- Responsabilidades pueden agregarse/quitarse dinámicamente
+- Funcionalidades se pueden combinar de múltiples formas
+- Cumple principio Abierto/Cerrado
 
 ---
 
@@ -39,11 +51,29 @@ Describe cómo el patrón propone resolver el problema:
 
 Roles principales del patrón:
 
-- **Contexto:**
-- **Interfaz:**
-- **Implementaciones concretas:**
+- **Component (Componente - Interfaz):** 
+  - Define interfaz común para objetos que pueden ser decorados
+  - Pueden ser componentes concretos o decorators
+  
+- **ConcreteComponent (Componente Concreto):** 
+  - Define un objeto al que se le pueden agregar responsabilidades
+  - Implementación base sin decoraciones
+  
+- **Decorator (Decorador Abstracto):** 
+  - Mantiene referencia a un objeto Component
+  - Implementa la misma interfaz que Component
+  - Delega operaciones al componente envuelto
+  
+- **ConcreteDecorator (Decorador Concreto):** 
+  - Agrega responsabilidades específicas al componente
+  - Puede agregar estado y comportamiento
+  - Llama al método del componente y agrega funcionalidad
 
-_(Puedes acompañar esta sección con un diagrama UML en `/docs/diagramas`)_
+**Relaciones:**
+- Decorator envuelve un Component
+- ConcreteDecorator extiende Decorator
+- Los decorators pueden apilarse (un decorator envuelve otro decorator)
+- Client usa Component (interfaz común)
 
 ---
 
@@ -52,8 +82,17 @@ _(Puedes acompañar esta sección con un diagrama UML en `/docs/diagramas`)_
 ### 📁 Estructura de Carpetas
 
 ```text
-nombre-del-patron/
+decorator/
 ├── context/
+│   └── Coffee.java                   # Componente base
 ├── strategy/
+│   ├── Beverage.java                 # Interfaz componente
+│   └── BeverageDecorator.java        # Decorator abstracto
 ├── impl/
-└── Main.java
+│   ├── SimpleCoffee.java             # Componente concreto
+│   ├── Espresso.java                 # Componente concreto
+│   ├── MilkDecorator.java            # Decorator: leche
+│   ├── SugarDecorator.java           # Decorator: azúcar
+│   ├── WhipCreamDecorator.java       # Decorator: crema
+│   └── CaramelDecorator.java         # Decorator: caramelo
+└── Main.java                          # Demostración de combinaciones

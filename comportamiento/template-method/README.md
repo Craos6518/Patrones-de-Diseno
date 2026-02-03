@@ -16,22 +16,34 @@ Definir el esqueleto de un algoritmo en una clase base, dejando que las subclase
 
 ## ❓ Problema
 
-Explica el problema típico que aparece cuando **NO** se usa el patrón.
+Cuando varios algoritmos comparten estructura pero difieren en algunos pasos:
 
-- Código rígido
-- Muchas condiciones (`if / switch`)
-- Dificultad para extender
-- Alto acoplamiento
+- Código duplicado en algoritmos similares
+- Difícil mantener consistencia en la estructura del algoritmo
+- Violación del principio DRY (Don't Repeat Yourself)
+- Cambios en el flujo requieren modificar múltiples clases
+- No hay garantía de que los pasos se ejecuten en el orden correcto
+
+**Ejemplo:** Procesos de generación de reportes (PDF, Excel, HTML) que siguen los mismos pasos pero con implementaciones diferentes.
 
 ---
 
 ## ✅ Solución
 
-Describe cómo el patrón propone resolver el problema:
+El patrón Template Method propone:
 
-- Qué clases / interfaces introduce
-- Cómo se distribuyen las responsabilidades
-- Qué se desacopla
+- **Definir esqueleto:** El algoritmo se define en la clase base
+- **Métodos abstractos:** Los pasos variables son métodos abstractos
+- **Métodos hook:** Métodos opcionales que las subclases pueden sobrescribir
+- **Control centralizado:** La clase base controla el flujo del algoritmo
+- **Reutilización:** La estructura común se reutiliza
+
+**Beneficios:**
+- Reutiliza código común en la clase base
+- Controla qué pasos pueden variar
+- Invierte el control (Hollywood Principle)
+- Facilita mantenimiento del algoritmo
+- Garantiza que los pasos se ejecuten en orden correcto
 
 ---
 
@@ -39,11 +51,21 @@ Describe cómo el patrón propone resolver el problema:
 
 Roles principales del patrón:
 
-- **Contexto:**
-- **Interfaz:**
-- **Implementaciones concretas:**
+- **AbstractClass (Clase Abstracta):** 
+  - Define el método template que establece el esqueleto del algoritmo
+  - Declara métodos abstractos para pasos variables
+  - Puede incluir métodos hook con implementación por defecto
+  - Contiene pasos comunes implementados
+  
+- **ConcreteClass (Clase Concreta):** 
+  - Implementa los pasos abstractos del algoritmo
+  - Opcionalmente sobrescribe los métodos hook
+  - Hereda el método template y la estructura del algoritmo
 
-_(Puedes acompañar esta sección con un diagrama UML en `/docs/diagramas`)_
+**Relaciones:**
+- ConcreteClass hereda de AbstractClass
+- AbstractClass define el flujo y delega pasos específicos
+- Client invoca el método template en instancias de ConcreteClass
 
 ---
 
@@ -52,8 +74,11 @@ _(Puedes acompañar esta sección con un diagrama UML en `/docs/diagramas`)_
 ### 📁 Estructura de Carpetas
 
 ```text
-nombre-del-patron/
+template-method/
 ├── context/
-├── strategy/
+│   └── ReportGenerator.java          # Clase abstracta con template method
 ├── impl/
-└── Main.java
+│   ├── PDFReportGenerator.java       # Generador de reportes PDF
+│   ├── ExcelReportGenerator.java     # Generador de reportes Excel
+│   └── HTMLReportGenerator.java      # Generador de reportes HTML
+└── Main.java                          # Demostración de generación de reportes

@@ -16,22 +16,34 @@ Adaptar una interfaz existente a otra esperada por el cliente, permitiendo que c
 
 ## ❓ Problema
 
-Explica el problema típico que aparece cuando **NO** se usa el patrón.
+Cuando necesitamos usar una clase existente pero su interfaz no coincide con lo que necesitamos:
 
-- Código rígido
-- Muchas condiciones (`if / switch`)
-- Dificultad para extender
-- Alto acoplamiento
+- Incompatibilidad entre interfaces de sistemas diferentes
+- No podemos modificar la clase existente (librería externa, legacy code)
+- Queremos reutilizar clases existentes con interfaces incompatibles
+- Necesitamos integrar componentes de terceros
+- Múltiples clases con funcionalidad similar pero interfaces diferentes
+
+**Ejemplo:** Integrar un sistema de pagos de terceros con interfaz diferente a la esperada, o conectar una aplicación que espera XML con un servicio que retorna JSON.
 
 ---
 
 ## ✅ Solución
 
-Describe cómo el patrón propone resolver el problema:
+El patrón Adapter propone:
 
-- Qué clases / interfaces introduce
-- Cómo se distribuyen las responsabilidades
-- Qué se desacopla
+- **Clase Adapter:** Actúa como intermediario entre dos interfaces incompatibles
+- **Traducción de interfaz:** Convierte la interfaz de una clase en otra esperada
+- **Dos variantes:** Adapter de clase (herencia) y Adapter de objeto (composición)
+- **Reutilización:** Permite usar clases existentes sin modificarlas
+- **Desacoplamiento:** El cliente no conoce la clase adaptada
+
+**Beneficios:**
+- Reutiliza código existente sin modificarlo
+- Desacopla cliente de implementaciones específicas
+- Cumple principio Abierto/Cerrado
+- Facilita integración de componentes de terceros
+- Un adapter puede trabajar con múltiples adaptados
 
 ---
 
@@ -39,11 +51,27 @@ Describe cómo el patrón propone resolver el problema:
 
 Roles principales del patrón:
 
-- **Contexto:**
-- **Interfaz:**
-- **Implementaciones concretas:**
+- **Target (Objetivo - Interfaz):** 
+  - Define la interfaz que el cliente espera
+  - Es la interfaz que el cliente usa
+  
+- **Adapter (Adaptador):** 
+  - Adapta la interfaz de Adaptee a la interfaz Target
+  - Traduce las llamadas del cliente al Adaptee
+  - Puede ser de clase (herencia) u objeto (composición)
+  
+- **Adaptee (Adaptado):** 
+  - Clase existente con interfaz incompatible
+  - Necesita ser adaptada para ser utilizada
+  - No puede o no debe modificarse
+  
+- **Client (Cliente):** 
+  - Trabaja con objetos que conforman la interfaz Target
+  - No conoce al Adaptee directamente
 
-_(Puedes acompañar esta sección con un diagrama UML en `/docs/diagramas`)_
+**Variantes:**
+- **Object Adapter:** Usa composición (más flexible)
+- **Class Adapter:** Usa herencia múltiple (limitado en Java)
 
 ---
 
@@ -52,8 +80,14 @@ _(Puedes acompañar esta sección con un diagrama UML en `/docs/diagramas`)_
 ### 📁 Estructura de Carpetas
 
 ```text
-nombre-del-patron/
+adapter/
 ├── context/
+│   ├── ModernPaymentProcessor.java   # Sistema moderno (Target)
+│   └── LegacyPaymentSystem.java      # Sistema legacy (Adaptee)
 ├── strategy/
+│   └── PaymentProcessor.java         # Interfaz objetivo
 ├── impl/
-└── Main.java
+│   ├── PaymentAdapter.java           # Adapter: legacy → moderno
+│   ├── JsonToXmlAdapter.java         # Adapter: JSON → XML
+│   └── MetricToImperialAdapter.java  # Adapter: métricas → imperiales
+└── Main.java                          # Demostración de adaptación

@@ -16,22 +16,34 @@ Crear objetos sin especificar sus clases concretas, delegando la creación a mé
 
 ## ❓ Problema
 
-Explica el problema típico que aparece cuando **NO** se usa el patrón.
+Cuando la creación de objetos depende de condiciones o tipos específicos:
 
-- Código rígido
-- Muchas condiciones (`if / switch`)
-- Dificultad para extender
-- Alto acoplamiento
+- Código cliente acoplado a clases concretas
+- Condicionales para decidir qué clase instanciar
+- Difícil agregar nuevos tipos de productos
+- Violación del principio Abierto/Cerrado
+- Lógica de creación mezclada con lógica de negocio
+
+**Ejemplo:** Un sistema de notificaciones que debe crear diferentes tipos de notificadores (Email, SMS, Push) según la preferencia del usuario.
 
 ---
 
 ## ✅ Solución
 
-Describe cómo el patrón propone resolver el problema:
+El patrón Factory Method propone:
 
-- Qué clases / interfaces introduce
-- Cómo se distribuyen las responsabilidades
-- Qué se desacopla
+- **Método factory:** Define una interfaz para crear objetos
+- **Delegación a subclases:** Las subclases deciden qué clase instanciar
+- **Desacoplamiento:** El código cliente trabaja con interfaces, no con clases concretas
+- **Extensibilidad:** Nuevos productos se agregan mediante nuevas subclases
+- **Polimorfismo:** La creación usa el polimorfismo en lugar de condicionales
+
+**Beneficios:**
+- Elimina acoplamiento con clases concretas
+- Facilita agregar nuevos tipos de productos
+- Cumple con el principio Abierto/Cerrado
+- Centraliza lógica de creación
+- Soporta el principio de Inversión de Dependencias
 
 ---
 
@@ -39,11 +51,26 @@ Describe cómo el patrón propone resolver el problema:
 
 Roles principales del patrón:
 
-- **Contexto:**
-- **Interfaz:**
-- **Implementaciones concretas:**
+- **Product (Producto - Interfaz):** 
+  - Define la interfaz de los objetos que crea el factory method
+  
+- **ConcreteProduct (Producto Concreto):** 
+  - Implementa la interfaz Product
+  - Son los objetos específicos creados por las factories concretas
+  
+- **Creator (Creador):** 
+  - Declara el factory method que retorna un objeto Product
+  - Puede proporcionar implementación por defecto
+  - Usa el factory method para obtener productos
+  
+- **ConcreteCreator (Creador Concreto):** 
+  - Sobrescribe el factory method para retornar ConcreteProduct
+  - Decide qué clase de producto instanciar
 
-_(Puedes acompañar esta sección con un diagrama UML en `/docs/diagramas`)_
+**Relaciones:**
+- ConcreteCreator crea ConcreteProduct
+- Creator depende solo de la interfaz Product
+- Client trabaja con Creator y Product (interfaces)
 
 ---
 
@@ -52,8 +79,16 @@ _(Puedes acompañar esta sección con un diagrama UML en `/docs/diagramas`)_
 ### 📁 Estructura de Carpetas
 
 ```text
-nombre-del-patron/
+factory-method/
 ├── context/
+│   ├── NotificationFactory.java      # Creador abstracto
+│   ├── EmailNotificationFactory.java # Factory concreto: Email
+│   ├── SMSNotificationFactory.java   # Factory concreto: SMS
+│   └── PushNotificationFactory.java  # Factory concreto: Push
 ├── strategy/
+│   └── Notification.java             # Interfaz del producto
 ├── impl/
-└── Main.java
+│   ├── EmailNotification.java        # Producto concreto: Email
+│   ├── SMSNotification.java          # Producto concreto: SMS
+│   └── PushNotification.java         # Producto concreto: Push
+└── Main.java                          # Demostración de uso

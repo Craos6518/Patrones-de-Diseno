@@ -16,22 +16,34 @@ Encapsular una solicitud como un objeto, permitiendo parametrizar clientes con d
 
 ## ❓ Problema
 
-Explica el problema típico que aparece cuando **NO** se usa el patrón.
+Cuando necesitamos parametrizar objetos con operaciones, encolar solicitudes o implementar deshacer/rehacer:
 
-- Código rígido
-- Muchas condiciones (`if / switch`)
-- Dificultad para extender
-- Alto acoplamiento
+- Acoplamiento directo entre el invocador y el receptor de la acción
+- Imposibilidad de deshacer operaciones
+- Difícil registrar o encolar solicitudes
+- No se pueden parametrizar objetos con acciones
+- Complejo implementar transacciones o macros
+
+**Ejemplo:** Un editor de texto que necesita deshacer/rehacer acciones, o un control remoto universal.
 
 ---
 
 ## ✅ Solución
 
-Describe cómo el patrón propone resolver el problema:
+El patrón Command propone:
 
-- Qué clases / interfaces introduce
-- Cómo se distribuyen las responsabilidades
-- Qué se desacopla
+- **Encapsular solicitudes:** Cada solicitud es un objeto con toda la información necesaria
+- **Interfaz Command:** Define un método `execute()` común
+- **Desacoplamiento:** El invocador no conoce al receptor
+- **Historial:** Los comandos pueden almacenarse para deshacer/rehacer
+- **Composición:** Los comandos pueden combinarse en macros
+
+**Beneficios:**
+- Desacopla el objeto que invoca la operación del que la ejecuta
+- Permite deshacer/rehacer operaciones
+- Facilita encolar y programar solicitudes
+- Soporta registro de cambios (logging)
+- Permite crear comandos compuestos
 
 ---
 
@@ -39,11 +51,26 @@ Describe cómo el patrón propone resolver el problema:
 
 Roles principales del patrón:
 
-- **Contexto:**
-- **Interfaz:**
-- **Implementaciones concretas:**
+- **Command (Comando - Interfaz):** 
+  - Declara una interfaz para ejecutar operaciones
+  - Típicamente tiene método `execute()` y opcionalmente `undo()`
+  
+- **ConcreteCommand (Comando Concreto):** 
+  - Implementa `execute()` invocando operaciones en el Receiver
+  - Almacena el estado necesario para deshacer la operación
+  
+- **Invoker (Invocador):** 
+  - Solicita al comando que ejecute la petición
+  - No conoce cómo se implementa el comando
+  
+- **Receiver (Receptor):** 
+  - Sabe cómo realizar las operaciones necesarias
+  - Es quien realmente ejecuta la lógica de negocio
 
-_(Puedes acompañar esta sección con un diagrama UML en `/docs/diagramas`)_
+**Relaciones:**
+- Invoker usa Command
+- ConcreteCommand conoce a Receiver
+- Client crea ConcreteCommand y lo asocia con Receiver
 
 ---
 
@@ -52,8 +79,15 @@ _(Puedes acompañar esta sección con un diagrama UML en `/docs/diagramas`)_
 ### 📁 Estructura de Carpetas
 
 ```text
-nombre-del-patron/
+command/
 ├── context/
+│   ├── TextEditor.java               # Receptor (realiza las acciones)
+│   └── EditorInvoker.java            # Invocador (ejecuta comandos)
 ├── strategy/
+│   └── Command.java                  # Interfaz del comando
 ├── impl/
-└── Main.java
+│   ├── WriteCommand.java             # Comando: escribir texto
+│   ├── DeleteCommand.java            # Comando: borrar texto
+│   ├── CopyCommand.java              # Comando: copiar
+│   └── PasteCommand.java             # Comando: pegar
+└── Main.java                          # Demostración con undo/redo
