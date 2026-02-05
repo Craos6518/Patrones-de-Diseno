@@ -277,7 +277,7 @@ Template Method → Esqueleto de algoritmo
 - [Volver a Documentación](../README.md)
 - [Diagramas UML](../diagramas/)
 - [README Principal](../../README.md)
-- [Proyecto Final](../../proyecto-final-web/)
+- [Proyecto Final](../../proyecto-final-rpg/)
 
 ---
 

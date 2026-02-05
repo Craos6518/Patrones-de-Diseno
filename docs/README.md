@@ -133,7 +133,7 @@ Al agregar documentación:
 - [Patrones Creacionales](../creacionales/)
 - [Patrones Estructurales](../estructurales/)
 - [Patrones de Comportamiento](../comportamiento/)
-- [Proyecto Final Web](../proyecto-final-web/)
+- [Proyecto Final RPG](../proyecto-final-rpg/)
 
 ---
 
