@@ -1,0 +1,264 @@
+╔═══════════════════════════════════════════════════════════════════════════╗
+║                                                                           ║
+║        ☁️  SISTEMA DE CONTROL DE CLIMA  🌡️                              ║
+║                                                                           ║
+║                    Patrones de Diseño Creacionales                       ║
+║                             Java 17                                      ║
+║                                                                           ║
+╚═══════════════════════════════════════════════════════════════════════════╝
+
+┌───────────────────────────────────────────────────────────────────────────┐
+│                         📋 INFORMACIÓN DEL PROYECTO                       │
+└───────────────────────────────────────────────────────────────────────────┘
+
+  Versión:            1.0
+  Lenguaje:           Java 17
+  Patrones:           5 Creacionales (GoF)
+  Estado:             ✅ Completo y Funcional
+  Líneas de código:   ~1,200
+  Documentación:      ~40-50 páginas
+
+
+┌───────────────────────────────────────────────────────────────────────────┐
+│                      🎨 PATRONES IMPLEMENTADOS                            │
+└───────────────────────────────────────────────────────────────────────────┘
+
+  1️⃣  SINGLETON          → SistemaClima
+      └─ Instancia única del sistema central
+
+  2️⃣  FACTORY METHOD     → SensorFactory
+      └─ Creación flexible de sensores
+
+  3️⃣  ABSTRACT FACTORY   → EstacionFactory
+      └─ Familias de productos (básica/profesional)
+
+  4️⃣  BUILDER            → ReporteBuilder
+      └─ Construcción paso a paso de reportes
+
+  5️⃣  PROTOTYPE          → EstacionClimatica
+      └─ Clonación eficiente de estaciones
+
+
+┌───────────────────────────────────────────────────────────────────────────┐
+│                        📁 ESTRUCTURA DEL PROYECTO                         │
+└───────────────────────────────────────────────────────────────────────────┘
+
+  Tarea/Clima/
+  ├── 📄 Main.java                      ← Punto de entrada
+  │
+  ├── 📖 Documentación
+  │   ├── INDEX.md                      ← Índice general (COMIENZA AQUÍ)
+  │   ├── README.md                     ← Documentación completa
+  │   ├── GUIA_USO.md                   ← Guía práctica
+  │   ├── RESUMEN_EJECUTIVO.md          ← Para stakeholders
+  │   ├── DiagramaClaseGeneral.puml     ← UML completo
+  │   └── PatronesSeparados.puml        ← UML por patrón
+  │
+  ├── 📦 Core/
+  │   └── SistemaClima.java             ← Singleton
+  │
+  ├── 📦 Estacion/
+  │   ├── EstacionClimatica.java        ← Prototype
+  │   └── RegistroClimatico.java
+  │
+  ├── 📦 sensor/
+  │   ├── Sensor.java
+  │   ├── Sensortemperatura.java
+  │   ├── SensorHumedad.java
+  │   ├── SensorPresion.java
+  │   └── SensorViento.java
+  │
+  ├── 📦 Factory/
+  │   ├── SensorFactory.java            ← Factory Method
+  │   ├── EstacioFactory.java           ← Abstract Factory
+  │   ├── EstacionBasicafactory.java
+  │   └── EstacionProfecionalFactory.java
+  │
+  ├── 📦 Builder/
+  │   ├── Reporte.java
+  │   ├── reporteBuilder.java           ← Builder
+  │   ├── ReportePDFBuilder.java
+  │   ├── ReporteExcelBuilder.java
+  │   └── DirectorReporte.java
+  │
+  └── 📦 Prototype/
+      └── ClonableEstacion.java
+
+
+┌───────────────────────────────────────────────────────────────────────────┐
+│                          🚀 INICIO RÁPIDO                                 │
+└───────────────────────────────────────────────────────────────────────────┘
+
+  1. Navegar al directorio:
+     cd /path/to/Patrones-de-Diseno
+
+  2. Compilar:
+     javac Tarea/Clima/Main.java
+
+  3. Ejecutar:
+     java Tarea.Clima.Main
+
+  4. Leer documentación:
+     Abre INDEX.md para empezar
+
+
+┌───────────────────────────────────────────────────────────────────────────┐
+│                        📊 REQUERIMIENTOS CUBIERTOS                        │
+└───────────────────────────────────────────────────────────────────────────┘
+
+  ✅ 5 Historias de Usuario (HU1-HU5)
+  ✅ 5 Requerimientos Funcionales (RF1-RF5)
+  ✅ 5 Requerimientos No Funcionales (RNF1-RNF5)
+  ✅ Diagrama de Clases completo
+  ✅ Patrón Singleton implementado
+  ✅ Patrón Factory Method implementado
+  ✅ Patrón Abstract Factory implementado
+  ✅ Patrón Builder implementado
+  ✅ Patrón Prototype implementado
+
+
+┌───────────────────────────────────────────────────────────────────────────┐
+│                       🎓 CARACTERÍSTICAS PRINCIPALES                      │
+└───────────────────────────────────────────────────────────────────────────┘
+
+  ⭐ Sistema centralizado con Singleton
+  ⭐ Múltiples estaciones meteorológicas
+  ⭐ Sensores simulados (temperatura, humedad, presión, viento)
+  ⭐ Estaciones básicas y profesionales
+  ⭐ Clonación eficiente de configuraciones
+  ⭐ Reportes en múltiples formatos (PDF, Excel)
+  ⭐ Historial de datos climáticos
+  ⭐ Arquitectura extensible y mantenible
+
+
+┌───────────────────────────────────────────────────────────────────────────┐
+│                         📚 NAVEGACIÓN RÁPIDA                              │
+└───────────────────────────────────────────────────────────────────────────┘
+
+  Para...                              Lee...
+  ─────────────────────────────────────────────────────────────────────────
+  Entender el proyecto                 → INDEX.md
+  Ver todos los patrones               → README.md
+  Usar el sistema                      → GUIA_USO.md
+  Evaluar cumplimiento                 → RESUMEN_EJECUTIVO.md
+  Ver arquitectura                     → DiagramaClaseGeneral.puml
+  Estudiar patrones específicos        → PatronesSeparados.puml
+
+
+┌───────────────────────────────────────────────────────────────────────────┐
+│                          💡 EJEMPLO DE SALIDA                             │
+└───────────────────────────────────────────────────────────────────────────┘
+
+  Cuando ejecutes el programa, verás:
+
+  ╔═══════════════════════════════════════════════════╗
+  ║   SISTEMA DE CONTROL DE CLIMA - JAVA 17          ║
+  ║   Demostración de Patrones Creacionales          ║
+  ╚═══════════════════════════════════════════════════╝
+
+  ✓ Sistema de Clima inicializado (Singleton)
+  → Factory: Creando sensor de temperatura
+  → AbstractFactory (Profesional): Creando sensores...
+  → Prototype: Clonando estación...
+  ✓ Builder PDF: Reporte construido
+
+  [... más salida detallada ...]
+
+
+┌───────────────────────────────────────────────────────────────────────────┐
+│                         ✅ VALIDACIÓN Y PRUEBAS                           │
+└───────────────────────────────────────────────────────────────────────────┘
+
+  ✓ Compilación sin errores
+  ✓ Ejecución exitosa
+  ✓ Todos los patrones demostrados
+  ✓ Salida formateada y clara
+  ✓ Documentación completa
+  ✓ Diagramas UML incluidos
+  ✓ Código comentado
+  ✓ Estructura modular
+
+
+┌───────────────────────────────────────────────────────────────────────────┐
+│                           🔧 TECNOLOGÍAS                                  │
+└───────────────────────────────────────────────────────────────────────────┘
+
+  • Java 17 (LTS)
+  • Pattern-Oriented Design
+  • Clean Code Principles
+  • UML / PlantUML
+  • UpperCamelCase Convention
+
+
+┌───────────────────────────────────────────────────────────────────────────┐
+│                      🎯 OBJETIVOS DE APRENDIZAJE                          │
+└───────────────────────────────────────────────────────────────────────────┘
+
+  Este proyecto demuestra:
+
+  ✓ Uso correcto de patrones creacionales
+  ✓ Separación de responsabilidades
+  ✓ Diseño orientado a objetos
+  ✓ Código mantenible y extensible
+  ✓ Documentación profesional
+  ✓ Buenas prácticas de Java
+
+
+┌───────────────────────────────────────────────────────────────────────────┐
+│                         📞 RECURSOS DE AYUDA                              │
+└───────────────────────────────────────────────────────────────────────────┘
+
+  • INDEX.md              → Mapa completo de navegación
+  • GUIA_USO.md          → Solución de problemas
+  • README.md            → Explicación de patrones
+  • RESUMEN_EJECUTIVO.md → Métricas y lecciones aprendidas
+
+
+┌───────────────────────────────────────────────────────────────────────────┐
+│                          🏆 RESULTADOS FINALES                            │
+└───────────────────────────────────────────────────────────────────────────┘
+
+  Estado:                ✅ COMPLETO
+  Compilación:           ✅ Sin errores
+  Ejecución:             ✅ Funcional
+  Patrones:              ✅ 5/5 Implementados
+  Documentación:         ✅ Completa
+  Diagramas:             ✅ Incluidos
+  Ejemplos:              ✅ Demostrados
+  Calidad:               ✅ Profesional
+
+
+╔═══════════════════════════════════════════════════════════════════════════╗
+║                                                                           ║
+║                    ¡BIENVENIDO AL PROYECTO! 🚀                           ║
+║                                                                           ║
+║             Para comenzar, abre el archivo INDEX.md                      ║
+║                                                                           ║
+╚═══════════════════════════════════════════════════════════════════════════╝
+
+
+┌───────────────────────────────────────────────────────────────────────────┐
+│                              COMANDOS ÚTILES                              │
+└───────────────────────────────────────────────────────────────────────────┘
+
+  # Compilar el proyecto
+  javac Tarea/Clima/Main.java
+
+  # Ejecutar el programa
+  java Tarea.Clima.Main
+
+  # Ver estructura de archivos
+  tree Tarea/Clima
+
+  # Contar líneas de código
+  find Tarea/Clima -name "*.java" | xargs wc -l
+
+
+════════════════════════════════════════════════════════════════════════════
+
+  Proyecto: Sistema de Control de Clima
+  Autor:    Demostración de Patrones de Diseño
+  Fecha:    Marzo 2026
+  Versión:  1.0.0
+
+════════════════════════════════════════════════════════════════════════════

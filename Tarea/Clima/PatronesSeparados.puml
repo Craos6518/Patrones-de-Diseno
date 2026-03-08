@@ -1,0 +1,190 @@
+@startuml PatronesSeparados
+
+' ═══════════════════════════════════════════════════════════
+' DIAGRAMAS INDIVIDUALES POR PATRÓN
+' ═══════════════════════════════════════════════════════════
+
+' ─────────────────────────────────────────────────────────── 
+' 1. PATRÓN SINGLETON - SistemaClima
+' ───────────────────────────────────────────────────────────
+package "1. SINGLETON" <<Rectangle>> #LightBlue {
+    class SistemaClima {
+        - {static} instancia : SistemaClima
+        - estaciones : List<EstacionClimatica>
+        - historialClimatico : List<RegistroClimatico>
+        --
+        - SistemaClima()
+        + {static} getInstancia() : SistemaClima
+        + registrarEstacion(EstacionClimatica)
+        + registrarDato(RegistroClimatico)
+        + consultarClima()
+        + generarReporte()
+    }
+    
+    note right of SistemaClima
+        Constructor privado
+        Instancia única estática
+        Acceso mediante getInstancia()
+    end note
+}
+
+' ─────────────────────────────────────────────────────────── 
+' 2. PATRÓN FACTORY METHOD - SensorFactory
+' ───────────────────────────────────────────────────────────
+package "2. FACTORY METHOD" <<Rectangle>> #LightGreen {
+    abstract class Sensor {
+        # tipoSensor : String
+        # unidad : String
+        + {abstract} leerDato() : float
+    }
+    
+    class SensorFactory {
+        + {static} crearSensor(tipo:String) : Sensor
+    }
+    
+    class Sensortemperatura
+    class SensorHumedad
+    class SensorPresion
+    class SensorViento
+    
+    Sensor <|-- Sensortemperatura
+    Sensor <|-- SensorHumedad
+    Sensor <|-- SensorPresion
+    Sensor <|-- SensorViento
+    
+    SensorFactory ..> Sensor : <<creates>>
+    
+    note bottom of SensorFactory
+        crearSensor("temperatura")
+        crearSensor("humedad")
+        crearSensor("presion")
+        crearSensor("viento")
+    end note
+}
+
+' ─────────────────────────────────────────────────────────── 
+' 3. PATRÓN ABSTRACT FACTORY - EstacionFactory
+' ───────────────────────────────────────────────────────────
+package "3. ABSTRACT FACTORY" <<Rectangle>> #LightYellow {
+    interface EstacionFactory {
+        + crearSensorTemperatura() : Sensor
+        + crearSensorHumedad() : Sensor
+        + crearSensorPresion() : Sensor
+        + crearSensorViento() : Sensor
+        + getTipoEstacion() : String
+    }
+    
+    class EstacionBasicafactory {
+        + crearSensorTemperatura() : Sensor
+        + crearSensorHumedad() : Sensor
+        + crearSensorPresion() : Sensor ❌
+        + crearSensorViento() : Sensor ❌
+    }
+    
+    class EstacionProfecionalFactory {
+        + crearSensorTemperatura() : Sensor ✓
+        + crearSensorHumedad() : Sensor ✓
+        + crearSensorPresion() : Sensor ✓
+        + crearSensorViento() : Sensor ✓
+    }
+    
+    EstacionFactory <|.. EstacionBasicafactory
+    EstacionFactory <|.. EstacionProfecionalFactory
+    
+    note right of EstacionBasicafactory
+        Crea solo sensores básicos
+        (temperatura y humedad)
+    end note
+    
+    note right of EstacionProfecionalFactory
+        Crea todos los sensores
+        (familia completa)
+    end note
+}
+
+' ─────────────────────────────────────────────────────────── 
+' 4. PATRÓN BUILDER - ReporteBuilder
+' ───────────────────────────────────────────────────────────
+package "4. BUILDER" <<Rectangle>> #LightCoral {
+    class Reporte {
+        - encabezado : String
+        - datos : String
+        - pie : String
+        - formato : String
+        + mostrar()
+    }
+    
+    interface reporteBuilder {
+        + buildEncabezado(titulo, fecha)
+        + buildDatos(contenido)
+        + buildPie(firma)
+        + getReporte() : Reporte
+    }
+    
+    class ReportePDFBuilder {
+        + buildEncabezado()
+        + buildDatos()
+        + buildPie()
+        + getReporte() : Reporte
+    }
+    
+    class ReporteExcelBuilder {
+        + buildEncabezado()
+        + buildDatos()
+        + buildPie()
+        + getReporte() : Reporte
+    }
+    
+    class DirectorReporte {
+        - builder : reporteBuilder
+        + construirReporte()
+        + construirReporteRapido()
+    }
+    
+    reporteBuilder <|.. ReportePDFBuilder
+    reporteBuilder <|.. ReporteExcelBuilder
+    reporteBuilder ..> Reporte : <<builds>>
+    DirectorReporte --> reporteBuilder
+    DirectorReporte ..> Reporte : <<construye>>
+    
+    note bottom of DirectorReporte
+        Orquesta la construcción
+        de reportes usando el builder
+    end note
+}
+
+' ─────────────────────────────────────────────────────────── 
+' 5. PATRÓN PROTOTYPE - EstacionClimatica
+' ───────────────────────────────────────────────────────────
+package "5. PROTOTYPE" <<Rectangle>> #Lavender {
+    interface ClonableEstacion {
+        + clone() : EstacionClimatica
+    }
+    
+    class EstacionClimatica {
+        - id : int
+        - ubicacion : String
+        - sensores : List<Sensor>
+        - tipoEstacion : String
+        --
+        + clone() : EstacionClimatica
+        + configurarConFactory()
+        + obtenerDatos()
+    }
+    
+    EstacionClimatica ..|> ClonableEstacion
+    
+    note right of EstacionClimatica
+        Implementa clonación profunda
+        Copia todos los atributos
+        incluyendo la lista de sensores
+    end note
+    
+    note bottom of ClonableEstacion
+        EstacionClimatica original = ...
+        EstacionClimatica clon = original.clone()
+        clon.setUbicacion("Nueva ubicación")
+    end note
+}
+
+@enduml

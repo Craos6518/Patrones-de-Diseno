@@ -1,0 +1,260 @@
+@startuml DiagramaClaseGeneral
+
+' ═══════════════════════════════════════════════════════════
+' DIAGRAMA DE CLASES GENERAL - SISTEMA DE CONTROL DE CLIMA
+' ═══════════════════════════════════════════════════════════
+
+title Sistema de Control de Clima - Diagrama de Clases General
+
+' ────────────────────────────────────────────────────────────
+' SINGLETON - Sistema Central
+' ────────────────────────────────────────────────────────────
+class SistemaClima <<Singleton>> {
+    - {static} instancia : SistemaClima
+    - estaciones : List<EstacionClimatica>
+    - historialClimatico : List<RegistroClimatico>
+    --
+    - SistemaClima()
+    + {static} getInstancia() : SistemaClima
+    + registrarEstacion(EstacionClimatica)
+    + registrarDato(RegistroClimatico)
+    + consultarClima()
+    + generarReporte()
+    + getEstaciones() : List<EstacionClimatica>
+    + getHistorialClimatico() : List<RegistroClimatico>
+}
+
+' ────────────────────────────────────────────────────────────
+' PROTOTYPE - Estación Climática
+' ────────────────────────────────────────────────────────────
+interface ClonableEstacion <<interface>> {
+    + clone() : EstacionClimatica
+}
+
+class EstacionClimatica {
+    - id : int
+    - ubicacion : String
+    - sensores : List<Sensor>
+    - tipoEstacion : String
+    --
+    + EstacionClimatica(int, String)
+    + configurarConFactory(EstacioFactory)
+    + agregarSensor(Sensor)
+    + obtenerDatos() : RegistroClimatico
+    + clone() : EstacionClimatica
+    + getId() : int
+    + getUbicacion() : String
+    + setUbicacion(String)
+    + setId(int)
+}
+
+class RegistroClimatico {
+    - temperatura : float
+    - humedad : float
+    - presion : float
+    - velocidadViento : float
+    - fechaHora : LocalDateTime
+    --
+    + RegistroClimatico(float, float, float, float)
+    + getTemperatura() : float
+    + getHumedad() : float
+    + getPresion() : float
+    + getVelocidadViento() : float
+    + getFechaHora() : LocalDateTime
+    + toString() : String
+}
+
+' ────────────────────────────────────────────────────────────
+' FACTORY METHOD - Sensores
+' ────────────────────────────────────────────────────────────
+abstract class Sensor {
+    # tipoSensor : String
+    # unidad : String
+    --
+    + Sensor(String, String)
+    + {abstract} leerDato() : float
+    + getTipoSensor() : String
+    + getUnidad() : String
+    + toString() : String
+}
+
+class Sensortemperatura {
+    - random : Random
+    --
+    + Sensortemperatura()
+    + leerDato() : float
+}
+
+class SensorHumedad {
+    - random : Random
+    --
+    + SensorHumedad()
+    + leerDato() : float
+}
+
+class SensorPresion {
+    - random : Random
+    --
+    + SensorPresion()
+    + leerDato() : float
+}
+
+class SensorViento {
+    - random : Random
+    --
+    + SensorViento()
+    + leerDato() : float
+}
+
+class SensorFactory <<Factory Method>> {
+    + {static} crearSensor(String) : Sensor
+}
+
+' ────────────────────────────────────────────────────────────
+' ABSTRACT FACTORY - Fábricas de Estaciones
+' ────────────────────────────────────────────────────────────
+interface EstacioFactory <<interface>> {
+    + crearSensorTemperatura() : Sensor
+    + crearSensorHumedad() : Sensor
+    + crearSensorPresion() : Sensor
+    + crearSensorViento() : Sensor
+    + getTipoEstacion() : String
+}
+
+class EstacionBasicafactory {
+    + crearSensorTemperatura() : Sensor
+    + crearSensorHumedad() : Sensor
+    + crearSensorPresion() : Sensor
+    + crearSensorViento() : Sensor
+    + getTipoEstacion() : String
+}
+
+class EstacionProfecionalFactory {
+    + crearSensorTemperatura() : Sensor
+    + crearSensorHumedad() : Sensor
+    + crearSensorPresion() : Sensor
+    + crearSensorViento() : Sensor
+    + getTipoEstacion() : String
+}
+
+' ────────────────────────────────────────────────────────────
+' BUILDER - Construcción de Reportes
+' ────────────────────────────────────────────────────────────
+class Reporte {
+    - encabezado : String
+    - datos : String
+    - pie : String
+    - formato : String
+    --
+    + setEncabezado(String)
+    + setDatos(String)
+    + setPie(String)
+    + setFormato(String)
+    + mostrar()
+    + toString() : String
+}
+
+interface reporteBuilder <<interface>> {
+    + buildEncabezado(String, String)
+    + buildDatos(String)
+    + buildPie(String)
+    + getReporte() : Reporte
+}
+
+class ReportePDFBuilder {
+    - reporte : Reporte
+    --
+    + ReportePDFBuilder()
+    + buildEncabezado(String, String)
+    + buildDatos(String)
+    + buildPie(String)
+    + getReporte() : Reporte
+}
+
+class ReporteExcelBuilder {
+    - reporte : Reporte
+    --
+    + ReporteExcelBuilder()
+    + buildEncabezado(String, String)
+    + buildDatos(String)
+    + buildPie(String)
+    + getReporte() : Reporte
+}
+
+class DirectorReporte {
+    - builder : reporteBuilder
+    --
+    + DirectorReporte(reporteBuilder)
+    + setBuilder(reporteBuilder)
+    + construirReporte(String, String, String) : Reporte
+    + construirReporteRapido(String) : Reporte
+}
+
+' ═══════════════════════════════════════════════════════════
+' RELACIONES
+' ═══════════════════════════════════════════════════════════
+
+' Singleton
+SistemaClima "1" *-- "*" EstacionClimatica : administra
+SistemaClima "1" *-- "*" RegistroClimatico : almacena
+
+' Prototype
+EstacionClimatica ..|> ClonableEstacion : implements
+EstacionClimatica "1" *-- "*" Sensor : contiene
+EstacionClimatica "1" --> "*" RegistroClimatico : genera
+
+' Factory Method
+Sensor <|-- Sensortemperatura : extends
+Sensor <|-- SensorHumedad : extends
+Sensor <|-- SensorPresion : extends
+Sensor <|-- SensorViento : extends
+SensorFactory ..> Sensor : creates
+
+' Abstract Factory
+EstacioFactory <|.. EstacionBasicafactory : implements
+EstacioFactory <|.. EstacionProfecionalFactory : implements
+EstacioFactory ..> Sensor : creates
+EstacionClimatica --> EstacioFactory : usa
+
+' Builder
+reporteBuilder <|.. ReportePDFBuilder : implements
+reporteBuilder <|.. ReporteExcelBuilder : implements
+reporteBuilder ..> Reporte : builds
+DirectorReporte --> reporteBuilder : usa
+DirectorReporte ..> Reporte : construye
+SistemaClima ..> DirectorReporte : usa
+
+' ═══════════════════════════════════════════════════════════
+' NOTAS
+' ═══════════════════════════════════════════════════════════
+note top of SistemaClima
+  <b>PATRÓN SINGLETON</b>
+  Garantiza una única instancia
+  del sistema de clima
+end note
+
+note top of SensorFactory
+  <b>PATRÓN FACTORY METHOD</b>
+  Crea diferentes tipos de sensores
+  sin exponer la lógica de creación
+end note
+
+note top of EstacioFactory
+  <b>PATRÓN ABSTRACT FACTORY</b>
+  Crea familias de sensores para
+  estaciones básicas o profesionales
+end note
+
+note top of reporteBuilder
+  <b>PATRÓN BUILDER</b>
+  Construye reportes complejos
+  paso a paso en diferentes formatos
+end note
+
+note top of ClonableEstacion
+  <b>PATRÓN PROTOTYPE</b>
+  Permite clonar estaciones
+  climáticas existentes
+end note
+
+@enduml
